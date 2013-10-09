@@ -10,6 +10,7 @@
 
 #include <list>
 #include <string>
+#include <map>
 
 #include "common/extension_adapter.h"
 #include "common/picojson.h"
@@ -55,4 +56,18 @@ bool IsExist(const char* path);
 
 }  // namespace system_info
 
+class SysInfoObject {
+ public:
+  // Get support
+  virtual void Get(picojson::value& error, picojson::value& data) = 0;
+
+  // Listerner support
+  virtual void StartListening(ContextAPI* api) = 0;
+  virtual void StopListening(ContextAPI* api) = 0;
+
+ protected:
+  pthread_mutex_t events_list_mutex_;
+};
+
+static std::map<std::string, SysInfoObject&> sys_instances_map_;
 #endif  // SYSTEM_INFO_SYSTEM_INFO_UTILS_H_

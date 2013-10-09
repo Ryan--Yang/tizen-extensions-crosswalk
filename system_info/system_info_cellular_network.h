@@ -17,7 +17,7 @@
 #include "common/utils.h"
 #include "system_info/system_info_utils.h"
 
-class SysInfoCellularNetwork {
+class SysInfoCellularNetwork : public SysInfoObject {
  public:
   static SysInfoCellularNetwork& GetSysInfoCellularNetwork() {
     static SysInfoCellularNetwork instance;
@@ -80,7 +80,6 @@ class SysInfoCellularNetwork {
   bool isRoaming_;
   bool isFlightMode_;
   std::string imei_;
-  pthread_mutex_t events_list_mutex_;
 
   DISALLOW_COPY_AND_ASSIGN(SysInfoCellularNetwork);
 };

@@ -24,7 +24,7 @@ enum SystemInfoDeviceOrientationStatus {
   LANDSCAPE_SECONDARY,
 };
 
-class SysInfoDeviceOrientation {
+class SysInfoDeviceOrientation : public SysInfoObject {
  public:
   static SysInfoDeviceOrientation& GetSysInfoDeviceOrientation() {
     static SysInfoDeviceOrientation instance;
@@ -64,7 +64,6 @@ class SysInfoDeviceOrientation {
   SystemInfoDeviceOrientationStatus status_;
   bool isAutoRotation_;
   int sensorHandle_;
-  pthread_mutex_t events_list_mutex_;
 
   DISALLOW_COPY_AND_ASSIGN(SysInfoDeviceOrientation);
 };

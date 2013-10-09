@@ -12,7 +12,7 @@
 #include "common/utils.h"
 #include "system_info/system_info_utils.h"
 
-class SysInfoDisplay {
+class SysInfoDisplay : public SysInfoObject {
  public:
   static SysInfoDisplay& GetSysInfoDisplay() {
     static SysInfoDisplay instance;
@@ -60,7 +60,6 @@ class SysInfoDisplay {
   double physical_height_;
   double brightness_;
   int timeout_cb_id_;
-  pthread_mutex_t events_list_mutex_;
 
   DISALLOW_COPY_AND_ASSIGN(SysInfoDisplay);
 };

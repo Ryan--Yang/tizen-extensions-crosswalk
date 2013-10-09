@@ -13,7 +13,7 @@
 #include "common/utils.h"
 #include "system_info/system_info_utils.h"
 
-class SysInfoBuild {
+class SysInfoBuild : public SysInfoObject {
  public:
   static SysInfoBuild& GetSysInfoBuild() {
     static SysInfoBuild instance;
@@ -53,7 +53,6 @@ class SysInfoBuild {
   bool UpdateOSBuild();
   static gboolean OnUpdateTimeout(gpointer user_data);
 
-  pthread_mutex_t events_list_mutex_;
   std::string model_;
   std::string manufacturer_;
   std::string buildversion_;

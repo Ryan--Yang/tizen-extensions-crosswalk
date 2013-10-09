@@ -5,6 +5,9 @@
 #ifndef SYSTEM_INFO_SYSTEM_INFO_CONTEXT_H_
 #define SYSTEM_INFO_SYSTEM_INFO_CONTEXT_H_
 
+#include <string>
+#include <map>
+
 #include "common/extension_adapter.h"
 #include "common/picojson.h"
 #include "system_info/system_info_battery.h"
@@ -19,6 +22,7 @@
 #include "system_info/system_info_sim.h"
 #include "system_info/system_info_storage.h"
 #include "system_info/system_info_wifi_network.h"
+#include "system_info/system_info_utils.h"
 
 namespace picojson {
 class value;
@@ -35,6 +39,8 @@ class SystemInfoContext {
   void HandleMessage(const char* message);
   void HandleSyncMessage(const char* message);
 
+  static void InstancesMapInitialize();
+
  private:
   void HandleGetPropertyValue(const picojson::value& input,
                               picojson::value& output);
@@ -49,18 +55,7 @@ class SystemInfoContext {
   }
 
   ContextAPI* api_;
-  SysInfoBattery& battery_;
-  SysInfoBuild& build_;
-  SysInfoCellularNetwork& cellular_network_;
-  SysInfoCpu& cpu_;
-  SysInfoDeviceOrientation& device_orientation_;
-  SysInfoDisplay& display_;
-  SysInfoLocale& locale_;
-  SysInfoNetwork& network_;
-  SysInfoPeripheral& peripheral_;
-  SysInfoSim& sim_;
-  SysInfoStorage& storage_;
-  SysInfoWifiNetwork& wifi_network_;
+  std::map<std::string, SysInfoObject&>::iterator sys_instances_it_;
 };
 
 #endif  // SYSTEM_INFO_SYSTEM_INFO_CONTEXT_H_

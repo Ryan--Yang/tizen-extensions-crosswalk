@@ -16,7 +16,7 @@
 #include "common/utils.h"
 #include "system_info/system_info_utils.h"
 
-class SysInfoStorage {
+class SysInfoStorage : public SysInfoObject {
  public:
   static SysInfoStorage& GetSysInfoStorage() {
     static SysInfoStorage instance;
@@ -34,7 +34,6 @@ class SysInfoStorage {
 
   int timeout_cb_id_;
   picojson::value units_;
-  pthread_mutex_t events_list_mutex_;
 
 #if defined(GENERIC_DESKTOP)
   void GetDetails(const std::string& mnt_fsname,

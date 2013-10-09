@@ -37,7 +37,7 @@ enum SystemInfoNetworkType {
   void METHOD(SENDER, ARG0);
 #endif
 
-class SysInfoNetwork {
+class SysInfoNetwork : public SysInfoObject {
  public:
   static SysInfoNetwork& GetSysInfoNetwork() {
     static SysInfoNetwork instance;
@@ -57,7 +57,6 @@ class SysInfoNetwork {
   std::string ToNetworkTypeString(SystemInfoNetworkType type);
 
   SystemInfoNetworkType type_;
-  pthread_mutex_t events_list_mutex_;
 
 #if defined(GENERIC_DESKTOP)
   G_CALLBACK_1(OnNetworkManagerCreated, GObject*, GAsyncResult*);

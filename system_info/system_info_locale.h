@@ -18,7 +18,7 @@
 #include "common/utils.h"
 #include "system_info/system_info_utils.h"
 
-class SysInfoLocale {
+class SysInfoLocale : public SysInfoObject {
  public:
   static SysInfoLocale& GetSysInfoLocale() {
     static SysInfoLocale instance;
@@ -41,7 +41,6 @@ class SysInfoLocale {
 
   std::string language_;
   std::string country_;
-  pthread_mutex_t events_list_mutex_;
 
 #if defined(GENERIC_DESKTOP)
   static gboolean OnUpdateTimeout(gpointer user_data);

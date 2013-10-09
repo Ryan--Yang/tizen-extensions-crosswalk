@@ -12,7 +12,7 @@
 #include "common/utils.h"
 #include "system_info/system_info_utils.h"
 
-class SysInfoCpu {
+class SysInfoCpu : public SysInfoObject {
  public:
   static SysInfoCpu& GetSysInfoCpu() {
     static SysInfoCpu instance;
@@ -45,7 +45,6 @@ class SysInfoCpu {
   double load_;
   unsigned long long old_total_; //NOLINT
   unsigned long long old_used_; //NOLINT
-  pthread_mutex_t events_list_mutex_;
   int timeout_cb_id_;
 
   DISALLOW_COPY_AND_ASSIGN(SysInfoCpu);

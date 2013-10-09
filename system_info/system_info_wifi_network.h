@@ -27,7 +27,7 @@
   void METHOD(SENDER, ARG0);
 #endif
 
-class SysInfoWifiNetwork {
+class SysInfoWifiNetwork : public SysInfoObject {
  public:
   static SysInfoWifiNetwork& GetSysInfoWifiNetwork() {
     static SysInfoWifiNetwork instance;
@@ -51,7 +51,6 @@ class SysInfoWifiNetwork {
   std::string ipv6_address_;
   std::string ssid_;
   std::string status_;
-  pthread_mutex_t events_list_mutex_;
 
 #if defined(GENERIC_DESKTOP)
   G_CALLBACK_WIFI(OnAccessPointCreated, GObject*, GAsyncResult*);

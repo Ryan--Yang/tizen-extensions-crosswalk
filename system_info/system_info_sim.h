@@ -18,7 +18,7 @@
 #include "common/utils.h"
 #include "system_info/system_info_utils.h"
 
-class SysInfoSim {
+class SysInfoSim : public SysInfoObject {
  public:
   static SysInfoSim& GetSysInfoSim() {
     static SysInfoSim instance;
@@ -90,7 +90,6 @@ class SysInfoSim {
   unsigned int mnc_;
   std::string msin_;
   std::string spn_;
-  pthread_mutex_t events_list_mutex_;
 
   DISALLOW_COPY_AND_ASSIGN(SysInfoSim);
 };

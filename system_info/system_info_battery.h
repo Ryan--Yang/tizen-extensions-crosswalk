@@ -18,7 +18,7 @@
 #include "common/utils.h"
 #include "system_info/system_info_utils.h"
 
-class SysInfoBattery {
+class SysInfoBattery : public SysInfoObject {
  public:
   static SysInfoBattery& GetSysInfoBattery() {
     static SysInfoBattery instance;
@@ -50,7 +50,6 @@ class SysInfoBattery {
 
   double level_;
   bool charging_;
-  pthread_mutex_t events_list_mutex_;
 
   DISALLOW_COPY_AND_ASSIGN(SysInfoBattery);
 };

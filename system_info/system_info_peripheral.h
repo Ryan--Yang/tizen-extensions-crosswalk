@@ -15,7 +15,7 @@
 #include "common/utils.h"
 #include "system_info/system_info_utils.h"
 
-class SysInfoPeripheral {
+class SysInfoPeripheral : public SysInfoObject {
  public:
   static SysInfoPeripheral& GetSysInfoPeripheral() {
     static SysInfoPeripheral instance;
@@ -50,7 +50,6 @@ class SysInfoPeripheral {
   bool is_video_output_;
   int wfd_;
   int hdmi_;
-  pthread_mutex_t events_list_mutex_;
 
   DISALLOW_COPY_AND_ASSIGN(SysInfoPeripheral);
 };
