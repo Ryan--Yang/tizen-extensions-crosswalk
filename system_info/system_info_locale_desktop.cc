@@ -18,9 +18,9 @@ SysInfoLocale::SysInfoLocale()
   pthread_mutex_init(&events_list_mutex_, NULL);
 }
 
-void SysInfoLocale::StartListening(ContextAPI* api) {
+void SysInfoLocale::StartListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  local_events_.push_back(api);
+  local_events_.push_back(instance);
   if (timeout_cb_id_ == 0) {
     timeout_cb_id_ = g_timeout_add(system_info::default_timeout_interval,
                                    SysInfoLocale::OnUpdateTimeout,
@@ -28,9 +28,9 @@ void SysInfoLocale::StartListening(ContextAPI* api) {
   }
 }
 
-void SysInfoLocale::StopListening(ContextAPI* api) {
+void SysInfoLocale::StopListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  local_events_.remove(api);
+  local_events_.remove(instance);
   if (local_events_.empty() && timeout_cb_id_ > 0) {
     g_source_remove(timeout_cb_id_);
     timeout_cb_id_ = 0;

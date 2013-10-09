@@ -26,10 +26,10 @@ SysInfoBattery::~SysInfoBattery() {
   pthread_mutex_destroy(&events_list_mutex_);
 }
 
-void SysInfoBattery::StartListening(ContextAPI* api) {
+void SysInfoBattery::StartListening(SystemInfoInstance* instance) {
   // FIXME(halton): Use udev D-Bus interface to monitor.
   AutoLock lock(&events_list_mutex_);
-  battery_events_.push_back(api);
+  battery_events_.push_back(instance);
   if (timeout_cb_id_ == 0) {
     timeout_cb_id_ = g_timeout_add(system_info::default_timeout_interval,
                                    SysInfoBattery::OnUpdateTimeout,
@@ -37,9 +37,9 @@ void SysInfoBattery::StartListening(ContextAPI* api) {
   }
 }
 
-void SysInfoBattery::StopListening(ContextAPI* api) {
+void SysInfoBattery::StopListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  battery_events_.remove(api);
+  battery_events_.remove(instance);
   if (battery_events_.empty() && timeout_cb_id_ > 0) {
     g_source_remove(timeout_cb_id_);
     timeout_cb_id_ = 0;

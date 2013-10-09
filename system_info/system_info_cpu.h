@@ -27,8 +27,8 @@ class SysInfoCpu : public SysInfoObject {
   void Get(picojson::value& error, picojson::value& data);
 
   // Listerner support
-  void StartListening(ContextAPI* api);
-  void StopListening(ContextAPI* api);
+  void StartListening(SystemInfoInstance* instance);
+  void StopListening(SystemInfoInstance* instance);
 
  private:
   explicit SysInfoCpu()

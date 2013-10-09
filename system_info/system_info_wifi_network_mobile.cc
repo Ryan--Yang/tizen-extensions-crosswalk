@@ -45,9 +45,9 @@ SysInfoWifiNetwork::~SysInfoWifiNetwork() {
   pthread_mutex_destroy(&events_list_mutex_);
 }
 
-void SysInfoWifiNetwork::StartListening(ContextAPI* api) {
+void SysInfoWifiNetwork::StartListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  wifi_network_events_.push_back(api);
+  wifi_network_events_.push_back(instance);
   if (connection_handle_ && wifi_network_events_.size() == 1) {
     connection_set_type_changed_cb(connection_handle_,
                                    OnTypeChanged, this);
@@ -56,9 +56,9 @@ void SysInfoWifiNetwork::StartListening(ContextAPI* api) {
   }
 }
 
-void SysInfoWifiNetwork::StopListening(ContextAPI* api) {
+void SysInfoWifiNetwork::StopListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  wifi_network_events_.remove(api);
+  wifi_network_events_.remove(instance);
   if (connection_handle_ && wifi_network_events_.empty()) {
     connection_unset_type_changed_cb(connection_handle_);
     connection_unset_ip_address_changed_cb(connection_handle_);

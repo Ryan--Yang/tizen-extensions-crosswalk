@@ -24,8 +24,8 @@ class SysInfoStorage : public SysInfoObject {
   }
   ~SysInfoStorage();
   void Get(picojson::value& error, picojson::value& data);
-  void StartListening(ContextAPI* api);
-  void StopListening(ContextAPI* api);
+  void StartListening(SystemInfoInstance* instance);
+  void StopListening(SystemInfoInstance* instance);
 
  private:
   explicit SysInfoStorage();

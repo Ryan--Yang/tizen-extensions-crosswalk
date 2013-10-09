@@ -101,9 +101,9 @@ void SysInfoBattery::OnIsChargingChanged(keynode_t* node, void* user_data) {
   battery->UpdateCharging(charging);
 }
 
-void SysInfoBattery::StartListening(ContextAPI* api) {
+void SysInfoBattery::StartListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  battery_events_.push_back(api);
+  battery_events_.push_back(instance);
 
   if (battery_events_.size() > 1)
     return;
@@ -114,9 +114,9 @@ void SysInfoBattery::StartListening(ContextAPI* api) {
       (vconf_callback_fn)OnIsChargingChanged, this);
 }
 
-void SysInfoBattery::StopListening(ContextAPI* api) {
+void SysInfoBattery::StopListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  battery_events_.remove(api);
+  battery_events_.remove(instance);
 
   if (!battery_events_.empty())
     return;

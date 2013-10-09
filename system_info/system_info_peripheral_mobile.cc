@@ -79,9 +79,9 @@ void SysInfoPeripheral::OnHDMIChanged(keynode_t* node, void* user_data) {
   peripheral->SetHDMI(hdmi);
 }
 
-void SysInfoPeripheral::StartListening(ContextAPI* api) {
+void SysInfoPeripheral::StartListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  peripheral_events_.push_back(api);
+  peripheral_events_.push_back(instance);
 
   if (peripheral_events_.size() > 1)
     return;
@@ -92,9 +92,9 @@ void SysInfoPeripheral::StartListening(ContextAPI* api) {
       (vconf_callback_fn)OnHDMIChanged, this);
 }
 
-void SysInfoPeripheral::StopListening(ContextAPI* api) {
+void SysInfoPeripheral::StopListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  peripheral_events_.remove(api);
+  peripheral_events_.remove(instance);
 
   if (!peripheral_events_.empty())
     return;

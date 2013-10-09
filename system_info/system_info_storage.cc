@@ -63,10 +63,10 @@ gboolean SysInfoStorage::OnUpdateTimeout(gpointer user_data) {
   return TRUE;
 }
 
-void SysInfoStorage::StartListening(ContextAPI* api) {
+void SysInfoStorage::StartListening(SystemInfoInstance* instance) {
   // FIXME(halton): Use udev D-Bus interface to monitor.
   AutoLock lock(&events_list_mutex_);
-  storage_events_.push_back(api);
+  storage_events_.push_back(instance);
   if (timeout_cb_id_ == 0) {
     timeout_cb_id_ = g_timeout_add(system_info::default_timeout_interval,
                                    SysInfoStorage::OnUpdateTimeout,
@@ -74,9 +74,9 @@ void SysInfoStorage::StartListening(ContextAPI* api) {
   }
 }
 
-void SysInfoStorage::StopListening(ContextAPI* api) {
+void SysInfoStorage::StopListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  storage_events_.remove(api);
+  storage_events_.remove(instance);
   if (storage_events_.empty() && timeout_cb_id_ > 0) {
     g_source_remove(timeout_cb_id_);
     timeout_cb_id_ = 0;

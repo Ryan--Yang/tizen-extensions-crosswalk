@@ -2,80 +2,34 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "system_info/system_info_context.h"
-
 #include <stdlib.h>
 #if defined(TIZEN_MOBILE)
+#include <system_info.h>
 #include <pkgmgr-info.h>
 #include <sensors.h>
-#include <system_info.h>
 #endif
 
 #include <string>
 #include <utility>
 
 #include "common/picojson.h"
+#include "system_info/system_info_instance.h"
 #include "system_info/system_info_utils.h"
 
 const char* sSystemInfoFilePath = "/usr/etc/system-info.ini";
+std::map<std::string, SysInfoObject&>::iterator sys_instances_it_;
 
-int32_t XW_Initialize(XW_Extension extension, XW_GetInterface get_interface) {
-  SystemInfoContext::InstancesMapInitialize();
-  return ExtensionAdapter<SystemInfoContext>::Initialize(extension,
-                                                         get_interface);
-}
+SystemInfoInstance::SystemInfoInstance() {}
 
-SystemInfoContext::SystemInfoContext(ContextAPI* api)
-    : api_(api) {}
-
-SystemInfoContext::~SystemInfoContext() {
+SystemInfoInstance::~SystemInfoInstance() {
   for (sys_instances_it_ = sys_instances_map_.begin();
        sys_instances_it_ != sys_instances_map_.end();
        sys_instances_it_++) {
-    (sys_instances_it_->second).StopListening(api_);
+    (sys_instances_it_->second).StopListening(this);
   }
-
-  delete api_;
 }
 
-const char SystemInfoContext::name[] = "tizen.systeminfo";
-
-// This will be generated from system_info_api.js.
-extern const char kSource_system_info_api[];
-
-const char* SystemInfoContext::GetJavaScript() {
-  return kSource_system_info_api;
-}
-
-void SystemInfoContext::InstancesMapInitialize() {
-  sys_instances_map_.insert(std::pair<std::string, SysInfoObject&>(
-      "BATTERY", SysInfoBattery::GetSysInfoBattery()));
-  sys_instances_map_.insert(std::pair<std::string, SysInfoObject&>(
-      "BUILD", SysInfoBuild::GetSysInfoBuild()));
-  sys_instances_map_.insert(std::pair<std::string, SysInfoObject&>(
-      "CELLULAR_NETWORK", SysInfoCellularNetwork::GetSysInfoCellularNetwork()));
-  sys_instances_map_.insert(std::pair<std::string, SysInfoObject&>(
-      "CPU", SysInfoCpu::GetSysInfoCpu()));
-  sys_instances_map_.insert(std::pair<std::string, SysInfoObject&>(
-      "DEVICE_ORIENTATION",
-      SysInfoDeviceOrientation::GetSysInfoDeviceOrientation()));
-  sys_instances_map_.insert(std::pair<std::string, SysInfoObject&>(
-      "DISPLAY", SysInfoDisplay::GetSysInfoDisplay()));
-  sys_instances_map_.insert(std::pair<std::string, SysInfoObject&>(
-      "LOCALE", SysInfoLocale::GetSysInfoLocale()));
-  sys_instances_map_.insert(std::pair<std::string, SysInfoObject&>(
-      "SIM", SysInfoSim::GetSysInfoSim()));
-  sys_instances_map_.insert(std::pair<std::string, SysInfoObject&>(
-      "STORAGE", SysInfoStorage::GetSysInfoStorage()));
-  sys_instances_map_.insert(std::pair<std::string, SysInfoObject&>(
-      "NETWORK", SysInfoNetwork::GetSysInfoNetwork()));
-  sys_instances_map_.insert(std::pair<std::string, SysInfoObject&>(
-      "PERIPHERAL", SysInfoPeripheral::GetSysInfoPeripheral()));
-  sys_instances_map_.insert(std::pair<std::string, SysInfoObject&>(
-      "WIFI_NETWORK", SysInfoWifiNetwork::GetSysInfoWifiNetwork()));
-}
-
-void SystemInfoContext::HandleGetPropertyValue(const picojson::value& input,
+void SystemInfoInstance::HandleGetPropertyValue(const picojson::value& input,
                                                picojson::value& output) {
   std::string reply_id = input.get("_reply_id").to_str();
   system_info::SetPicoJsonObjectValue(output, "_reply_id",
@@ -102,28 +56,28 @@ void SystemInfoContext::HandleGetPropertyValue(const picojson::value& input,
   }
 
   std::string result = output.serialize();
-  api_->PostMessage(result.c_str());
+  PostMessage(result.c_str());
 }
 
-void SystemInfoContext::HandleStartListening(const picojson::value& input) {
+void SystemInfoInstance::HandleStartListening(const picojson::value& input) {
   std::string prop = input.get("prop").to_str();
   sys_instances_it_= sys_instances_map_.find(prop);
 
   if (sys_instances_it_ != sys_instances_map_.end()) {
-    (sys_instances_it_->second).StartListening(api_);
+    (sys_instances_it_->second).StartListening(this);
   }
 }
 
-void SystemInfoContext::HandleStopListening(const picojson::value& input) {
+void SystemInfoInstance::HandleStopListening(const picojson::value& input) {
   std::string prop = input.get("prop").to_str();
   sys_instances_it_= sys_instances_map_.find(prop);
 
   if (sys_instances_it_ != sys_instances_map_.end()) {
-    (sys_instances_it_->second).StopListening(api_);
+    (sys_instances_it_->second).StopListening(this);
   }
 }
 
-void SystemInfoContext::HandleMessage(const char* message) {
+void SystemInfoInstance::HandleMessage(const char* message) {
   picojson::value input;
   std::string err;
 
@@ -144,7 +98,7 @@ void SystemInfoContext::HandleMessage(const char* message) {
   }
 }
 
-void SystemInfoContext::HandleSyncMessage(const char* message) {
+void SystemInfoInstance::HandleSyncMessage(const char* message) {
   picojson::value v;
 
   std::string err;
@@ -162,7 +116,7 @@ void SystemInfoContext::HandleSyncMessage(const char* message) {
   }
 }
 
-void SystemInfoContext::HandleGetCapabilities() {
+void SystemInfoInstance::HandleGetCapabilities() {
   picojson::value::object o;
 
 #if defined(TIZEN_MOBILE)
@@ -416,5 +370,5 @@ void SystemInfoContext::HandleGetCapabilities() {
 #endif
 
   picojson::value v(o);
-  api_->SetSyncReply(v.serialize().c_str());
+  SendSyncReply(v.serialize().c_str());
 }

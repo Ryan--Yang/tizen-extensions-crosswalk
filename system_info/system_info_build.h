@@ -25,18 +25,18 @@ class SysInfoBuild : public SysInfoObject {
     pthread_mutex_destroy(&events_list_mutex_);
   }
   void Get(picojson::value& error, picojson::value& data);
-  inline void StartListening(ContextAPI* api) {
+  inline void StartListening(SystemInfoInstance* instance) {
     AutoLock lock(&events_list_mutex_);
-    build_events_.push_back(api);
+    build_events_.push_back(instance);
     if (timeout_cb_id_ == 0) {
       timeout_cb_id_ = g_timeout_add(system_info::default_timeout_interval,
                                      SysInfoBuild::OnUpdateTimeout,
                                      static_cast<gpointer>(this));
     }
   }
-  inline void StopListening(ContextAPI* api) {
+  inline void StopListening(SystemInfoInstance* instance) {
     AutoLock lock(&events_list_mutex_);
-    build_events_.remove(api);
+    build_events_.remove(instance);
     if (build_events_.empty() && timeout_cb_id_ > 0) {
       g_source_remove(timeout_cb_id_);
       timeout_cb_id_ = 0;

@@ -311,9 +311,9 @@ void SysInfoCellularNetwork::OnFlightModeChanged(keynode_t* node,
   cellular->UpdateFlightMode(flight_mode);
 }
 
-void SysInfoCellularNetwork::StartListening(ContextAPI* api) {
+void SysInfoCellularNetwork::StartListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  cellular_events_.push_back(api);
+  cellular_events_.push_back(instance);
 
   if (cellular_events_.size() > 1)
     return;
@@ -332,9 +332,9 @@ void SysInfoCellularNetwork::StartListening(ContextAPI* api) {
       (vconf_callback_fn)OnFlightModeChanged, this);
 }
 
-void SysInfoCellularNetwork::StopListening(ContextAPI* api) {
+void SysInfoCellularNetwork::StopListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  cellular_events_.remove(api);
+  cellular_events_.remove(instance);
 
   if (!cellular_events_.empty())
     return;

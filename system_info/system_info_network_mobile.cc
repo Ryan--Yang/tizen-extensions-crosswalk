@@ -28,18 +28,18 @@ SysInfoNetwork::~SysInfoNetwork() {
   pthread_mutex_destroy(&events_list_mutex_);
 }
 
-void SysInfoNetwork::StartListening(ContextAPI* api) {
+void SysInfoNetwork::StartListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  network_events_.push_back(api);
+  network_events_.push_back(instance);
   if (connection_handle_ && network_events_.size() == 1) {
     connection_set_type_changed_cb(connection_handle_,
                                    OnTypeChanged, this);
   }
 }
 
-void SysInfoNetwork::StopListening(ContextAPI* api) {
+void SysInfoNetwork::StopListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  network_events_.remove(api);
+  network_events_.remove(instance);
   if (network_events_.empty() && connection_handle_) {
     connection_unset_type_changed_cb(connection_handle_);
   }

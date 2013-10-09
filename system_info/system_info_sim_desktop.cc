@@ -10,5 +10,5 @@ void SysInfoSim::Get(picojson::value& error,
       picojson::value("SIM is not supported on desktop."));
 }
 
-void SysInfoSim::StartListening(ContextAPI* api) { }
-void SysInfoSim::StopListening(ContextAPI* api) { }
+void SysInfoSim::StartListening(SystemInfoInstance* instance) { }
+void SysInfoSim::StopListening(SystemInfoInstance* instance) { }

@@ -12,9 +12,9 @@ SysInfoLocale::SysInfoLocale() {
   pthread_mutex_init(&events_list_mutex_, NULL);
 }
 
-void SysInfoLocale::StartListening(ContextAPI* api) {
+void SysInfoLocale::StartListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  local_events_.push_back(api);
+  local_events_.push_back(instance);
 
   if (local_events_.size() > 1)
     return;
@@ -25,9 +25,9 @@ void SysInfoLocale::StartListening(ContextAPI* api) {
       static_cast<vconf_callback_fn>(OnLanguageChanged), this);
 }
 
-void SysInfoLocale::StopListening(ContextAPI* api) {
+void SysInfoLocale::StopListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  local_events_.remove(api);
+  local_events_.remove(instance);
 
   if (!local_events_.empty())
     return;

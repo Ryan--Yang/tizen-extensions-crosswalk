@@ -43,10 +43,10 @@ SysInfoNetwork::~SysInfoNetwork() {
   pthread_mutex_destroy(&events_list_mutex_);
 }
 
-void SysInfoNetwork::StartListening(ContextAPI* api) {
+void SysInfoNetwork::StartListening(SystemInfoInstance* instance) {
 }
 
-void SysInfoNetwork::StopListening(ContextAPI* api) {
+void SysInfoNetwork::StopListening(SystemInfoInstance* instance) {
 }
 
 void SysInfoNetwork::OnNetworkManagerCreated(GObject*, GAsyncResult* res) {

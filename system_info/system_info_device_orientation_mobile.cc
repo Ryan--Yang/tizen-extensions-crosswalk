@@ -139,9 +139,9 @@ void SysInfoDeviceOrientation::OnAutoRotationChanged(keynode_t* node,
   orientation->SendUpdate();
 }
 
-void SysInfoDeviceOrientation::StartListening(ContextAPI* api) {
+void SysInfoDeviceOrientation::StartListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  device_orientation_events_.push_back(api);
+  device_orientation_events_.push_back(instance);
 
   if (device_orientation_events_.size() > 1)
     return;
@@ -167,9 +167,9 @@ void SysInfoDeviceOrientation::StartListening(ContextAPI* api) {
   }
 }
 
-void SysInfoDeviceOrientation::StopListening(ContextAPI* api) {
+void SysInfoDeviceOrientation::StopListening(SystemInfoInstance* instance) {
   AutoLock lock(&events_list_mutex_);
-  device_orientation_events_.remove(api);
+  device_orientation_events_.remove(instance);
 
   if (!device_orientation_events_.empty())
     return;

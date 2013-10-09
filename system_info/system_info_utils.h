@@ -13,9 +13,10 @@
 #include <map>
 
 #include "common/extension_adapter.h"
+#include "system_info/system_info_instance.h"
 #include "common/picojson.h"
 
-typedef std::list<ContextAPI*> SystemInfoEventsList;
+typedef std::list<SystemInfoInstance*> SystemInfoEventsList;
 
 static SystemInfoEventsList battery_events_;
 static SystemInfoEventsList build_events_;
@@ -62,8 +63,8 @@ class SysInfoObject {
   virtual void Get(picojson::value& error, picojson::value& data) = 0;
 
   // Listerner support
-  virtual void StartListening(ContextAPI* api) = 0;
-  virtual void StopListening(ContextAPI* api) = 0;
+  virtual void StartListening(SystemInfoInstance* instance) = 0;
+  virtual void StopListening(SystemInfoInstance* instance) = 0;
 
  protected:
   pthread_mutex_t events_list_mutex_;
